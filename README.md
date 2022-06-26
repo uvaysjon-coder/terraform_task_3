@@ -326,7 +326,7 @@ terraform apply
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture10.png)
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture11.png)
 
-### 9. Apache Web server installed and html web page is appeared.
+### 9. The Apache web server was installed and an html page appeared.
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture12.png)
 
 ### 10. I connected to Ubuntu Server through ssh.
