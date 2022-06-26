@@ -309,7 +309,7 @@ terraform init
 terraform plan
 </pre>
 
-### [Output file](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/terraform_task_3/terraform_plan.txt)
+### [Output file](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/terraform_task/terrafrom_plan.txt)
 
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture6.png)
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture7.png)
@@ -330,10 +330,9 @@ terraform apply
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture12.png)
 
 ### 10. I connected to Ubuntu Server through ssh.
-![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture12.png)
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture13.png)
 
 ### 11. As we know we created security group for to CentOS to not have access to the Internet but only for local network, so that's why when I try to connect throug my ip i got error Connection timed out. But when I connect throug My Ubuntu Server I've connected
-![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture13.png)
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture14.png)
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture15.png)
 
