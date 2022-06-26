@@ -151,7 +151,7 @@ sudo apt update
 sudo apt install apache2 -y
 sudo rm -r /var/www/html/index.html
 system=`hostnamectl`
-sudo echo "[html code]((https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture4.png))" >> /usr/share/nginx/html/index.html
+sudo echo <a href="https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture4.png">"html code"</a> >> /usr/share/nginx/html/index.html 
 sudo systemctl start apache2
 sudo apt-get update
 sudo apt-get install \
