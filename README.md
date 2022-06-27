@@ -459,6 +459,27 @@ output "latest_centOS_ami_name" {
 
 I’ve created shell script install.sh to install Nginx Web Server and connected them with <strong>"user_data = file(install.sh)"</strong>
 
+### install.sh
+<pre>
+sudo yum install epel-release -y
+sudo yum install nginx -y
+system=`hostnamectl`
+sudo echo "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Hello World</h2>
+    <h2>My Operating System details:</h2>
+    <pre>$system</pre>
+</body>
+</html>" >> /usr/share/nginx/html/index.html
+sudo systemctl start nginx
+sudo systemctl enable nginx
+</pre>
+
 ### 4. After running instances I modified security group of CentOS by changing cider blocks to "cidr_blocks = ["52.51.231.151/32"]" ip address of EC2 Ubuntu.
 
 ### 5. I ran the final Terraform script
