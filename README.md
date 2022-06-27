@@ -464,7 +464,7 @@ I’ve created shell script install.sh to install Nginx Web Server and connected
 sudo yum install epel-release -y
 sudo yum install nginx -y
 system=`hostnamectl`
-sudo echo "html file" >> /usr/share/nginx/html/index.html
+sudo echo "<a href="https://github.com/uvaysjon-coder/terraform_task_3/blob/main/extra_terraform_task/install.sh">"html code"</a>" >> /usr/share/nginx/html/index.html
 sudo systemctl start nginx
 sudo systemctl enable nginx
 </pre>
