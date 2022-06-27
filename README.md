@@ -336,6 +336,300 @@ terraform apply
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture14.png)
 ![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture15.png)
 
+# Extra Terraform Task
+
+### 1. In order to complete task 6 "AMI ID cannot be hardcoded" I've used data source.
+
+<pre>
+provider "aws" {
+  region = "eu-west-1"
+}
+
+data "aws_ami" "latest_ubuntu" {
+  owners      = ["099720109477"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+}
+
+data "aws_ami" "latest_centOS" {
+  owners      = ["679593333241"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["CentOS-7-*.x86_64-d9a3032a-921c-4c6d-b150-bde168105e42"]
+  }
+}
+
+output "latest_ubuntu_ami_id" {
+  value = data.aws_ami.latest_ubuntu.id
+}
+
+output "latest_ubuntu_ami_name" {
+  value = data.aws_ami.latest_ubuntu.name
+}
+
+output "latest_centOS_ami_id" {
+  value = data.aws_ami.latest_centOS.id
+}
+
+output "latest_centOS_ami_name" {
+  value = data.aws_ami.latest_centOS.name
+}
+</pre>
+
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture16.png)
+
+### 2. I created two instances by using data source for AMI ID
+
+<pre>
+provider "aws" {
+  region = "eu-west-1"
+}
+
+data "aws_ami" "latest_ubuntu" {
+  owners      = ["099720109477"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+}
+
+data "aws_ami" "latest_centOS" {
+  owners      = ["679593333241"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["CentOS-7-*.x86_64-d9a3032a-921c-4c6d-b150-bde168105e42"]
+  }
+}
+
+# Create Ubuntu instance
+resource "aws_instance" "my_Ubuntu" {
+  ami           = data.aws_ami.latest_ubuntu.id
+  instance_type = "t2.micro"
+  key_name      = "open_ssh"
+  tags = {
+    Name    = "My Ubuntu Server"
+    Owner   = "Uvaysjon Kholboev"
+    Project = "Terraform Tasks"
+  }
+}
+
+# Create CentOS instance
+resource "aws_instance" "my_CentOS" {
+  ami           = data.aws_ami.latest_centOS.id
+  instance_type = "t2.micro"
+  key_name      = "open_ssh"
+  tags = {
+    Name    = "My CentOS"
+    Owner   = "Uvaysjon Kholboev"
+    Project = "Terraform Tasks"
+  }
+}
+
+output "latest_ubuntu_ami_id" {
+  value = data.aws_ami.latest_ubuntu.id
+}
+
+output "latest_ubuntu_ami_name" {
+  value = data.aws_ami.latest_ubuntu.name
+}
+
+output "latest_centOS_ami_id" {
+  value = data.aws_ami.latest_centOS.id
+}
+
+output "latest_centOS_ami_name" {
+  value = data.aws_ami.latest_centOS.name
+}
+</pre>
+
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture17.png)
+
+### 3. I wrote additional script to create security groups for Ubuntu and CentOS instances:
+
+1)For EC2 Ubuntu to have Internet  with incoming access: ICMP, TCP/22, 80, 443, and any outgoing acces.<br>
+2)For EC2 CentOS have outgoing and incoming access: ICMP, TCP/22, TCP/80, TCP/443, only to EC2 Ubuntu.<br> 
+
+### 4. After that I wrote additional script to install nginx web server on EC2 CentOS and create a web page with the text “Hello World” and information about the current version of the operating system.<br>
+
+I’ve created shell script install.sh to install Nginx Web Server and connected them with <strong>"user_data = file(install.sh)"</strong>
+
+### 4. After running instances I modified security group of CentOS by changing cider blocks to "cidr_blocks = ["52.51.231.151/32"]" ip address of EC2 Ubuntu.
+
+### 5. I ran the final Terraform script
+<pre>
+terraform init
+terraform apply
+</pre>
+
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture18.png)
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture19.png)
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture20.png)
+
+### Final script
+<pre>
+#----------------------------------------
+# My Terraform Extra Task
+#
+# Uvaysjon Kholboev
+#
+#----------------------------------------
+
+provider "aws" {
+  region = "eu-west-1"
+}
+
+data "aws_ami" "latest_ubuntu" {
+  owners      = ["099720109477"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+}
+
+data "aws_ami" "latest_centOS" {
+  owners      = ["679593333241"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["CentOS-7-*.x86_64-d9a3032a-921c-4c6d-b150-bde168105e42"]
+  }
+}
+
+# Create Ubuntu instance
+resource "aws_instance" "my_Ubuntu" {
+  ami           = data.aws_ami.latest_ubuntu.id
+  instance_type = "t2.micro"
+  key_name      = "open_ssh"
+  tags = {
+    Name    = "My Ubuntu Server"
+    Owner   = "Uvaysjon Kholboev"
+    Project = "Terraform Tasks"
+  }
+  vpc_security_group_ids = [aws_security_group.my_Ubuntu.id]
+}
+
+# Create CentOS instance
+resource "aws_instance" "my_CentOS" {
+  ami           = data.aws_ami.latest_centOS.id
+  instance_type = "t2.micro"
+  key_name      = "open_ssh"
+  user_data = file("install.sh")
+  tags = {
+    Name    = "My CentOS"
+    Owner   = "Uvaysjon Kholboev"
+    Project = "Terraform Tasks"
+  }
+  vpc_security_group_ids = [aws_security_group.my_CentOS.id]
+}
+
+resource "aws_security_group" "my_Ubuntu" {
+  name        = "Ubuntu server security group"
+  description = "EC2 Ubuntu incoming access throug Internet: ICMP, TCP/22, 80, 443, and any outgoing access"
+
+  dynamic "ingress" {
+    for_each = ["22", "80", "443"]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+
+  ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "My_Ubuntu_Security_Group "
+  }
+}
+
+
+resource "aws_security_group" "my_CentOS" {
+  name        = "CentOS server security group"
+  description = "EC2 CentOS incoming access through local network: ICMP, TCP/22, 80, 443, and any outgoing access"
+
+  dynamic "ingress" {
+    for_each = ["22", "80", "443"]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["52.51.231.151/32"]
+    }
+  }
+
+
+  ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["52.51.231.151/32"]
+  }
+
+
+  dynamic "egress" {
+    for_each = ["22", "80", "443"]
+    content {
+      from_port   = egress.value
+      to_port     = egress.value
+      protocol    = "tcp"
+      cidr_blocks = ["52.51.231.151/32"]
+    }
+  }
+
+
+  egress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["52.51.231.151/32"]
+  }
+
+  tags = {
+    Name = "My_CentOS_Security_Group "
+  }
+}
+
+output "latest_ubuntu_ami_id" {
+  value = data.aws_ami.latest_ubuntu.id
+}
+
+output "latest_ubuntu_ami_name" {
+  value = data.aws_ami.latest_ubuntu.name
+}
+
+output "latest_centOS_ami_id" {
+  value = data.aws_ami.latest_centOS.id
+}
+
+output "latest_centOS_ami_name" {
+  value = data.aws_ami.latest_centOS.name
+}
+</pre>
+
+![alt text](https://github.com/uvaysjon-coder/terraform_task_3/blob/main/screenshots/Picture21.png)
+
 
 
 
